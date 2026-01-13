@@ -1,4 +1,4 @@
-# nf-core/asenext: Citations
+# nf-core/alleleexpression: Citations
 
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 

@@ -2,9 +2,9 @@
 
 /*
 ========================================================================================
-    ASENext Workflow
+    Alleleexpression Workflow
 ========================================================================================
-    Main workflow for ASENext pipeline
+    Main workflow for Alleleexpression pipeline
 ----------------------------------------------------------------------------------------
 */
 
@@ -26,7 +26,7 @@ include { PHASER_GENE_AE } from '../modules/local/phaser_gene_ae/main'
 include { EXTRACT_ASE_GENES } from '../modules/local/extract_ase_genes/main'
 include { MULTIQC } from '../modules/nf-core/multiqc/main'
 
-workflow ASENEXT {
+workflow alleleexpression {
     take:
     ch_input                // channel: path to input CSV
     ch_multiqc_config       // channel: /path/to/multiqc_config.yaml
@@ -56,7 +56,7 @@ main:
 
     // Extract just the reads for FastQC
     ch_vcf_input
-        .map { meta, reads, vcf -> [meta, reads] }
+        .map { meta, reads, _vcf -> [meta, reads] }
         .set { ch_reads }
 
     // Run FastQC
@@ -88,10 +88,10 @@ main:
 
     // Run STAR alignment with WASP
     STAR_ALIGN_WASP (
-        ch_reads_with_vcf.map { meta, reads, vcf -> [meta, reads] },
+        ch_reads_with_vcf.map { meta, reads, _vcf -> [meta, reads] },
         ch_star_index,
         ch_gtf,
-        ch_reads_with_vcf.map { meta, reads, vcf -> vcf },
+        ch_reads_with_vcf.map { _meta, _reads, vcf -> vcf },
         star_ignore_sjdbgtf,
         seq_platform,
         seq_center
@@ -164,10 +164,14 @@ main:
     // Combine final BAM with its index for phaser
     ch_final_bam_with_index = UMITOOLS_DEDUP.out.bam.join(SAMTOOLS_INDEX_FINAL.out.bai)
 
+    // Combine VCF and BAM for phaser
+    ch_phaser_input = TABIX_INDEX.out.vcf_indexed
+        .join(ch_final_bam_with_index)
+        .map { meta, vcf, tbi, bam, bai -> [meta, vcf, tbi, bam, bai] }
+
     // Run phaser
     PHASER (
-        TABIX_INDEX.out.vcf_indexed,
-        ch_final_bam_with_index
+        ch_phaser_input
     )
     ch_versions = ch_versions.mix(PHASER.out.versions)
 

@@ -7,8 +7,7 @@ process PHASER {
     'phaser:latest' }"
 
     input:
-    tuple val(meta), path(vcf), path(tbi)
-    tuple val(meta), path(bam), path(bai)
+    tuple val(meta), path(vcf), path(tbi), path(bam), path(bai)
 
     output:
     tuple val(meta), path("${meta.id}.phaser_output.haplotypic_counts.txt"), emit: counts

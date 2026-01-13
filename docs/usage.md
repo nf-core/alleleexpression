@@ -1,4 +1,5 @@
-# nf-core/asenext: Usage
+# nf-core/alleleexpression
+: Usage
 
 ## Table of contents
 
@@ -32,7 +33,8 @@
 
 ## Introduction
 
-**nf-core/asenext** is a bioinformatics pipeline that performs allele-specific expression (ASE) analysis using:
+**nf-core/alleleexpression
+** is a bioinformatics pipeline that performs allele-specific expression (ASE) analysis using:
 
 - **STAR-WASP** for allele-aware alignment
 - **UMI-tools** for molecular deduplication
@@ -43,7 +45,8 @@ The pipeline is designed for paired-end RNA-seq data with UMI barcodes and requi
 
 ## Pipeline summary
 
-The ASENext pipeline performs the following main steps:
+The Alleleexpression
+ pipeline performs the following main steps:
 
 1. **Quality Control** ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 2. **VCF Preparation** - Process VCF files for STAR and Beagle compatibility
@@ -64,7 +67,8 @@ The ASENext pipeline performs the following main steps:
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
    ```bash
-   nextflow run nf-core/asenext -profile test,docker --outdir <OUTDIR>
+   nextflow run nf-core/alleleexpression
+ -profile test,docker --outdir <OUTDIR>
    ```
 
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
@@ -77,7 +81,8 @@ The ASENext pipeline performs the following main steps:
 4. Start running your own analysis!
 
    ```bash
-   nextflow run nf-core/asenext --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 --chromosome chr11 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+   nextflow run nf-core/alleleexpression
+ --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 --chromosome chr11 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
    ```
 
 ## Pipeline parameters
@@ -200,7 +205,8 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 
 ## Reference files
 
-The ASENext pipeline requires several reference files to run successfully:
+The Alleleexpression
+ pipeline requires several reference files to run successfully:
 
 ### Required files
 
@@ -219,7 +225,8 @@ The ASENext pipeline requires several reference files to run successfully:
 The pipeline is compatible with reference files from [AWS iGenomes](https://ewels.github.io/AWS-iGenomes/). You can use the `--genome` parameter to automatically configure reference files:
 
 ```bash
-nextflow run nf-core/asenext --input samplesheet.csv --genome GRCh38 --outdir results
+nextflow run nf-core/alleleexpression
+ --input samplesheet.csv --genome GRCh38 --outdir results
 ```
 
 Supported genomes include:
@@ -256,7 +263,8 @@ awk '$3=="gene" {print $1"\t"$4-1"\t"$5"\t"$10"\t"$6"\t"$7}' genes.gtf | \
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run nf-core/asenext --input ./samplesheet.csv --outdir ./results --genome GRCh38 --chromosome chr11 -profile docker
+nextflow run nf-core/alleleexpression
+ --input ./samplesheet.csv --outdir ./results --genome GRCh38 --chromosome chr11 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -279,7 +287,8 @@ Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <
 The above pipeline run specified with a params file in yaml format:
 
 ```bash
-nextflow run nf-core/asenext -params-file params.yaml
+nextflow run nf-core/alleleexpression
+ -params-file params.yaml
 ```
 
 with `params.yaml` containing:
@@ -299,14 +308,17 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```bash
-nextflow pull nf-core/asenext
+nextflow pull nf-core/alleleexpression
+
 ```
 
 ### Reproducibility
 
 It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/asenext releases page](https://github.com/nf-core/asenext/releases) and find the latest pipeline version (numeric only, no `v`). Then specify this when running the pipeline with `-r` (one hyphen) - e.g. `-r 1.3.1`. Of course, you can switch to another version by changing the number after the `-r` flag.
+First, go to the [nf-core/alleleexpression
+ releases page](https://github.com/nf-core/alleleexpression
+/releases) and find the latest pipeline version (numeric only, no `v`). Then specify this when running the pipeline with `-r` (one hyphen) - e.g. `-r 1.3.1`. Of course, you can switch to another version by changing the number after the `-r` flag.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
 

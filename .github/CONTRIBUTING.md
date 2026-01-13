@@ -1,23 +1,23 @@
-# `nf-core/asenext`: Contributing Guidelines
+# `nf-core/alleleexpression`: Contributing Guidelines
 
 Hi there!
-Many thanks for taking an interest in improving nf-core/asenext.
+Many thanks for taking an interest in improving nf-core/alleleexpression.
 
-We try to manage the required tasks for nf-core/asenext using GitHub issues, you probably came to this page when creating one.
+We try to manage the required tasks for nf-core/alleleexpression using GitHub issues, you probably came to this page when creating one.
 Please use the pre-filled template to save time.
 
 However, don't be put off by this template - other more general issues and suggestions are welcome!
 Contributions to the code are even more welcome ;)
 
 > [!NOTE]
-> If you need help using or modifying nf-core/asenext then the best place to ask is on the nf-core Slack [#asenext](https://nfcore.slack.com/channels/asenext) channel ([join our Slack here](https://nf-co.re/join/slack)).
+> If you need help using or modifying nf-core/alleleexpression then the best place to ask is on the nf-core Slack [#alleleexpression](https://nfcore.slack.com/channels/alleleexpression) channel ([join our Slack here](https://nf-co.re/join/slack)).
 
 ## Contribution workflow
 
-If you'd like to write some code for nf-core/asenext, the standard workflow is as follows:
+If you'd like to write some code for nf-core/alleleexpression, the standard workflow is as follows:
 
-1. Check that there isn't already an issue about your idea in the [nf-core/asenext issues](https://github.com/nf-core/asenext/issues) to avoid duplicating work. If there isn't one already, please create one so that others know you're working on this
-2. [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) the [nf-core/asenext repository](https://github.com/nf-core/asenext) to your GitHub account
+1. Check that there isn't already an issue about your idea in the [nf-core/alleleexpression issues](https://github.com/nf-core/alleleexpression/issues) to avoid duplicating work. If there isn't one already, please create one so that others know you're working on this
+2. [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) the [nf-core/alleleexpression repository](https://github.com/nf-core/alleleexpression) to your GitHub account
 3. Make the necessary changes / additions within your forked repository following [Pipeline conventions](#pipeline-contribution-conventions)
 4. Use `nf-core pipelines schema build` and add any new parameters to the pipeline JSON schema (requires [nf-core tools](https://github.com/nf-core/tools) >= 1.10).
 5. Submit a Pull Request against the `dev` branch and wait for the code to be reviewed and merged
@@ -61,11 +61,11 @@ These tests are run both with the latest available version of `Nextflow` and als
 
 ## Getting help
 
-For further information/help, please consult the [nf-core/asenext documentation](https://nf-co.re/asenext/usage) and don't hesitate to get in touch on the nf-core Slack [#asenext](https://nfcore.slack.com/channels/asenext) channel ([join our Slack here](https://nf-co.re/join/slack)).
+For further information/help, please consult the [nf-core/alleleexpression documentation](https://nf-co.re/alleleexpression/usage) and don't hesitate to get in touch on the nf-core Slack [#alleleexpression](https://nfcore.slack.com/channels/alleleexpression) channel ([join our Slack here](https://nf-co.re/join/slack)).
 
 ## Pipeline contribution conventions
 
-To make the `nf-core/asenext` code and processing logic more understandable for new contributors and to ensure quality, we semi-standardise the way the code and other contributions are written.
+To make the `nf-core/alleleexpression` code and processing logic more understandable for new contributors and to ensure quality, we semi-standardise the way the code and other contributions are written.
 
 ### Adding a new step
 
@@ -115,7 +115,7 @@ This repo includes a devcontainer configuration which will create a GitHub Codes
 
 To get started:
 
-- Open the repo in [Codespaces](https://github.com/nf-core/asenext/codespaces)
+<!-- - Open the repo in [Codespaces](https://github.com/nf-core/alleleexpression/codespaces) -->
 - Tools installed
   - nf-core
   - Nextflow

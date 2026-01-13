@@ -1,4 +1,5 @@
-# nf-core/asenext: Output
+# nf-core/alleleexpression
+: Output
 
 ## Introduction
 
@@ -308,9 +309,11 @@ The pipeline collects various metrics throughout the analysis:
 
 ## Citation
 
-If you use nf-core/asenext for your analysis, please cite:
+If you use nf-core/alleleexpression
+ for your analysis, please cite:
 
-> **nf-core/asenext: Allele-specific expression analysis pipeline**
+> **nf-core/alleleexpression
+: Allele-specific expression analysis pipeline**
 >
 > doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX)
 

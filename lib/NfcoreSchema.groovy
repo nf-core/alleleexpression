@@ -6,7 +6,7 @@ class NfcoreSchema {
 
     // Placeholder for paramsHelp method
     static String paramsHelp(workflow, params) {
-        return "ASENext pipeline parameters:\n" + params.collect { k,v -> "  --${k}=${v}" }.join('\n')
+        return "Alleleexpression pipeline parameters:\n" + params.collect { k,v -> "  --${k}=${v}" }.join('\n')
     }
 
     // Placeholder for validateParameters method
@@ -16,6 +16,6 @@ class NfcoreSchema {
 
     // Placeholder for summary method
     static String summary(workflow, params, log) {
-        return "ASENext pipeline completed successfully!"
+        return "Alleleexpression pipeline completed successfully!"
     }
 }

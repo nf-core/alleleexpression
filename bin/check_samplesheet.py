@@ -14,7 +14,7 @@ logger = logging.getLogger()
 
 def parse_args(args=None):
     """Parse command line arguments."""
-    Description = "Reformat nf-core/asenext samplesheet file and check its contents."
+    Description = "Reformat nf-core/alleleexpression samplesheet file and check its contents."
     Epilog = "Example usage: python check_samplesheet.py <FILE_IN> <FILE_OUT>"
 
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)

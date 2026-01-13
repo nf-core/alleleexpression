@@ -1,6 +1,6 @@
 {
-    "name": "ASENext",
-    "homePage": "https://github.com/SAADAT-Abu/ASENext",
+    "name": "alleleexpression",
+    "homePage": "https://github.com/SAADAT-Abu/alleleexpression",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {
