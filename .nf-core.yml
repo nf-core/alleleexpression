@@ -1,10 +1,13 @@
 repository_type: pipeline
 nf_core_version: "3.3.1"
-
 lint:
   files_exist:
     - CODE_OF_CONDUCT.md
+    - .github/workflows/linting_comment.yml
   actions_awsfulltest: false
   actions_awstest: false
   pipeline_todos: false
   schema_ignore_params: "genomes"
+  files_unchanged:
+    - .github/workflows/branch.yml
+    - .github/workflows/linting.yml
