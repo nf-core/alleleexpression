@@ -73,10 +73,13 @@ main:
     ch_versions = ch_versions.mix(PREPARE_VCF.out.versions)
 
     // FIXED: Create properly formatted reference channels
+    // Value channels (.first()) so every sample can reuse the reference files
     ch_star_index = Channel.fromPath(params.star_index)
         .map { file -> [['id': 'star_index'], file] }
+        .first()
     ch_gtf = Channel.fromPath(params.gtf)
         .map { file -> [['id': 'gtf'], file] }
+        .first()
 
     // FIXED: Use direct values instead of Channel.value()
     def star_ignore_sjdbgtf = false
