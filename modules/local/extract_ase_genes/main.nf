@@ -17,11 +17,16 @@ process EXTRACT_ASE_GENES {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}.${params.chromosome}"
+    def overdispersion = params.ase_overdispersion != null ? "--overdispersion ${params.ase_overdispersion}" : ''
     """
     extract_ase_genes.py \\
         --input $ae_file \\
+        --test ${params.ase_test} \\
         --min-count ${params.ase_min_count} \\
         --fdr ${params.ase_fdr} \\
+        --min-effect ${params.ase_min_effect} \\
+        --trim ${params.ase_overdispersion_trim} \\
+        $overdispersion \\
         --out-all ${prefix}.ase_stats.tsv \\
         --out-ase ${prefix}.ASE.tsv
 

@@ -18,7 +18,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [SAMtools](#samtools) - BAM file processing
 - [BCFtools](#bcftools) - VCF processing
 - [Beagle](#beagle) - Haplotype phasing
-- [phaser](#phaser) - Allele-specific expression analysis
+- [phaser](#phaser) - Haplotypic and gene-level allele counts
+- [ASE calling](#ase-calling) - Statistical test for allele-specific expression per gene
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -174,11 +175,12 @@ Beagle phasing features:
 
 </details>
 
-[phaser](https://github.com/secastel/phaser) performs the core allele-specific expression analysis by:
+[phaser](https://github.com/secastel/phaser) quantifies allelic expression:
 
 1. **Haplotypic read counting**: Assigns reads to haplotypes based on phased variants
-2. **ASE quantification**: Calculates allele-specific expression for each gene
-3. **Statistical testing**: Determines significant ASE events
+2. **Gene-level aggregation** (`phaser_gene_ae`): Sums haplotype counts over each gene in `--gene_features`
+
+Statistical testing is done in the [ASE calling](#ase-calling) step.
 
 ### Key output files:
 
@@ -189,30 +191,41 @@ contig	start	stop	variantID	totalCount	haplotypeA	haplotypeB	aCount	bCount
 chr11	123456	123456	rs123456	50	A	G	25	25
 ```
 
-#### Gene-level ASE (`*_gene_ae.tsv`)
-Gene-level allele-specific expression results:
+#### Gene-level counts (`*_gene_ae.tsv`)
+Haplotype counts per gene, one row per feature in `--gene_features`:
 ```
-contig	start	stop	geneID	totalCount	aCount	bCount	log2FC	pValue
-chr11	1000000	2000000	ENSG00000123456	1000	600	400	0.585	0.001
+contig	start	stop	name	aCount	bCount	totalCount	log2_aFC	n_variants	variants	gw_phased	bam
+chr11	226910	245456	ENSG00000068831.19	19	120	139	-2.659	1	chr11_228885_G_T	1	NA12878.dedup
 ```
 
 Key columns:
-- `totalCount`: Total reads mapping to the gene
-- `aCount`/`bCount`: Reads supporting each allele
-- `log2FC`: Log2 fold-change between alleles
-- `pValue`: Statistical significance of ASE
+- `aCount`/`bCount`: Reads assigned to haplotype A / B
+- `totalCount`: Reads overlapping heterozygous variants in the gene
+- `log2_aFC`: log2(aCount / bCount)
+- `n_variants` / `variants`: Heterozygous variants used for the gene
 
-## Extract ASE Genes
+## ASE calling
 
 <details markdown="1">
 <summary>Output files</summary>
 
 - `ase/`
-  - `*.ASE.tsv`: Filtered list of genes showing significant allele-specific expression.
+  - `*.ase_stats.tsv`: All genes from `*_gene_ae.tsv` with test statistics added.
+  - `*.ASE.tsv`: Genes called as allele-specific (rows of `*.ase_stats.tsv` with `ase = 1`).
 
 </details>
 
-This step filters the gene-level ASE results to identify genes with evidence of allele-specific expression (where `totalCount > 0`), providing a curated list of ASE candidates for further investigation.
+Each gene with at least `--ase_min_count` haplotypic reads is tested against a balanced 0.5 haplotype ratio with the test chosen by `--ase_test` (`binomial` or `betabinomial`). P-values are corrected with Benjamini-Hochberg across the tested genes in each sample. A gene is called ASE when `padj < --ase_fdr` and its effect size, |major haplotype fraction - 0.5|, is at least `--ase_min_effect`. See [Choosing an ASE test](usage.md#choosing-an-ase-test).
+
+Columns added to the phaser gene-level table:
+- `major_allele_fraction`: max(aCount, bCount) / (aCount + bCount)
+- `pvalue`: Two-sided p-value (`NA` for genes below `--ase_min_count`)
+- `padj`: Benjamini-Hochberg adjusted p-value
+- `ase`: `1` if the gene is called ASE, otherwise `0`
+
+The task log (`.command.log` in the work directory) reports the test used, the number of genes tested and called, and, for `betabinomial`, the overdispersion (rho) used. A warning is printed when fewer than 50 genes are tested, as the rho estimate is then unreliable.
+
+Haplotype A and B are labels from phasing and are not comparable across genes; use `major_allele_fraction` for the size of the imbalance. Genes that overlap (e.g. sense/antisense pairs) can share variants and therefore counts, so one ASE gene can make an overlapping gene appear allele-specific.
 
 ## MultiQC
 
@@ -272,8 +285,9 @@ The pipeline collects various metrics throughout the analysis:
 
 1. **Variant coverage**: Ensure adequate read coverage at heterozygous sites
 2. **Phasing quality**: Check Beagle phasing statistics and phase probabilities
-3. **ASE significance**: Focus on genes with significant p-values and adequate read counts
-4. **Effect sizes**: Consider both statistical significance and biological relevance (log2FC)
+3. **ASE significance**: Focus on genes with `ase = 1` in `*.ase_stats.tsv` and adequate read counts
+4. **Effect sizes**: Consider both statistical significance and biological relevance (`major_allele_fraction`, `--ase_min_effect`)
+5. **Test choice**: Prefer `--ase_test betabinomial` for real data; the binomial test over-calls at high coverage
 
 ### Troubleshooting
 

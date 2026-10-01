@@ -119,6 +119,9 @@ def main():
     p.add_argument("--umi-len", type=int, default=10)
     p.add_argument("--dup-rate", type=float, default=0.25, help="Mean extra PCR copies per molecule (Poisson)")
     p.add_argument("--error-rate", type=float, default=0.002)
+    p.add_argument("--allelic-overdispersion", type=float, default=0.02,
+                   help="Non-ASE genes get hap1 fraction ~ Beta(mean 0.5, rho) instead of exactly 0.5; "
+                        "mimics extra-binomial noise in real data. 0 disables")
     p.add_argument("--seed", type=int, default=1)
     args = p.parse_args()
 
@@ -170,6 +173,9 @@ def main():
         if gid in ase_genes:
             strength = random.choice([0.75, 0.8, 0.85, 0.9])
             hap1_frac[gid] = strength if random.random() < 0.5 else 1 - strength
+        elif args.allelic_overdispersion > 0:
+            shape = (1 - args.allelic_overdispersion) / args.allelic_overdispersion / 2
+            hap1_frac[gid] = float(rng.beta(shape, shape))
         else:
             hap1_frac[gid] = 0.5
 
@@ -233,7 +239,7 @@ def main():
             fh.write("\t".join(map(str, [
                 gid, g["gene_name"], g["gene_type"], g["strand"],
                 g["exons"][0][0] + 1, g["exons"][-1][1],
-                len(exonic_hets(g["exons"])), int(gid in ase_genes), f"{hap1_frac[gid]:.2f}",
+                len(exonic_hets(g["exons"])), int(gid in ase_genes), f"{hap1_frac[gid]:.3f}",
                 gene_counts[gid][0], gene_counts[gid][1],
             ])) + "\n")
 

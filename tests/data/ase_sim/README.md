@@ -7,7 +7,9 @@ Built by `tests/scripts/make_ase_sim_data.sh` (≈1.5 min, downloads cached in `
 - **Samples**: NA12878, HG00096 (1000 Genomes 30x phased panel). Reads are simulated from
   their true haplotypes: 2x100 bp, unstranded, spliced via GENCODE v47 canonical transcripts,
   10 bp UMI as the last `:` field of the read name, ~20% PCR duplicates, 0.2% base errors.
-- **ASE**: 40 expressed genes per sample, 12 with planted allelic imbalance (75-90% one haplotype).
+- **ASE**: 100 expressed genes per sample, 12 with planted allelic imbalance (75-90% one haplotype).
+  The other genes get a haplotype ratio drawn from Beta(mean 0.5, rho = 0.02) instead of exactly
+  0.5, mimicking the extra-binomial noise of real data (`--allelic-overdispersion`).
 - **Beagle panel**: same window, 3198 samples (test samples and NA12878's parents removed).
 
 | Path | Content |
@@ -17,7 +19,7 @@ Built by `tests/scripts/make_ase_sim_data.sh` (≈1.5 min, downloads cached in `
 | `variants/<sample>.vcf.gz` | Unphased, PASS, non-ref SNPs (pipeline input) |
 | `variants/beagle_ref.chr11.vcf.gz`, `genetic_map.chr11.map` | Beagle reference + PLINK map |
 | `reference/` | `genome.fa`, `genes.gtf`, `genes.bed`, `star_index/` (STAR 2.7.11b) |
-| `truth/<sample>.truth_genes.tsv` | Planted hap1 fraction per gene + simulated molecules per haplotype |
+| `truth/<sample>.truth_genes.tsv` | True hap1 fraction per gene (`ase` = planted), simulated molecules per haplotype |
 | `truth/<sample>.truth_het_snps.tsv` | Exonic het SNPs with true phase |
 | `truth/<sample>.phased_truth.vcf.gz` | True phased genotypes (to score Beagle) |
 

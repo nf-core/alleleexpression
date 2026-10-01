@@ -150,6 +150,17 @@
             "fa_icon": "fas fa-balance-scale",
             "description": "Options for calling allele-specific expression from gene-level haplotype counts.",
             "properties": {
+                "ase_test": {
+                    "type": "string",
+                    "default": "binomial",
+                    "enum": [
+                        "binomial",
+                        "betabinomial"
+                    ],
+                    "description": "Statistical test for allele-specific expression: `binomial` or `betabinomial`.",
+                    "help_text": "Each gene is tested for a departure from a balanced (0.5) haplotype ratio using its phASER haplotype counts.\n\n- `binomial`: exact two-sided binomial test. Assumes counts vary only through read sampling. With deep coverage it also calls small imbalances caused by technical or biological noise, so it reports more false positives on real data.\n- `betabinomial`: two-sided beta-binomial test that allows extra-binomial variation (overdispersion, rho). rho is estimated per sample from the data (see `--ase_overdispersion_trim`) or fixed with `--ase_overdispersion`. Recommended for real data.",
+                    "fa_icon": "fas fa-calculator"
+                },
                 "ase_min_count": {
                     "type": "integer",
                     "default": 20,
@@ -162,8 +173,34 @@
                     "default": 0.05,
                     "minimum": 0,
                     "maximum": 1,
-                    "description": "Benjamini-Hochberg FDR threshold for calling a gene ASE (two-sided binomial test vs 0.5).",
+                    "description": "Benjamini-Hochberg FDR threshold for calling a gene ASE.",
                     "fa_icon": "fas fa-percent"
+                },
+                "ase_min_effect": {
+                    "type": "number",
+                    "default": 0,
+                    "minimum": 0,
+                    "exclusiveMaximum": 0.5,
+                    "description": "Minimum effect size to call a gene ASE, as |major haplotype fraction - 0.5|.",
+                    "help_text": "Applied on top of the statistical test with either `--ase_test`. For example `0.1` requires at least a 60:40 haplotype ratio and `0.15` at least 65:35. The default `0` calls every significant gene.",
+                    "fa_icon": "fas fa-ruler"
+                },
+                "ase_overdispersion": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "exclusiveMaximum": 1,
+                    "description": "Fixed beta-binomial overdispersion (rho) for `--ase_test betabinomial`. Estimated from the data if not set.",
+                    "help_text": "rho is the intra-class correlation of the beta-binomial: variance = n p (1 - p) (1 + (n - 1) rho). When not set, it is estimated per sample by trimmed maximum likelihood (see `--ase_overdispersion_trim`). Set it when a sample has few testable genes (the pipeline warns below 50), or to use one value across samples. Ignored with `--ase_test binomial`.",
+                    "fa_icon": "fas fa-wave-square"
+                },
+                "ase_overdispersion_trim": {
+                    "type": "number",
+                    "default": 0.2,
+                    "minimum": 0,
+                    "exclusiveMaximum": 1,
+                    "description": "Fraction of tested genes left out when estimating the beta-binomial overdispersion.",
+                    "help_text": "The estimate repeatedly fits rho, keeps the best-fitting (1 - trim) fraction of tested genes and refits, so that genes with real ASE do not inflate rho. Set it to roughly the largest share of tested genes you expect to show ASE. Higher values give a smaller rho (more calls); lower values a larger rho (fewer calls). Ignored with `--ase_test binomial` or when `--ase_overdispersion` is set.",
+                    "fa_icon": "fas fa-cut"
                 }
             }
         },
@@ -211,6 +248,37 @@
                     "description": "Institutional config name.",
                     "hidden": true,
                     "fa_icon": "fas fa-users-cog"
+                }
+            }
+        },
+        "max_job_request_options": {
+            "title": "Max job request options",
+            "type": "object",
+            "fa_icon": "fab fa-acquisitions-incorporated",
+            "description": "Set the top limit for requested resources for any single job.",
+            "properties": {
+                "max_cpus": {
+                    "type": "integer",
+                    "default": 16,
+                    "description": "Maximum number of CPUs that can be requested for any single job.",
+                    "fa_icon": "fas fa-microchip",
+                    "hidden": true
+                },
+                "max_memory": {
+                    "type": "string",
+                    "default": "128.GB",
+                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
+                    "description": "Maximum amount of memory that can be requested for any single job.",
+                    "fa_icon": "fas fa-memory",
+                    "hidden": true
+                },
+                "max_time": {
+                    "type": "string",
+                    "default": "240.h",
+                    "pattern": "^(\\d+\\.?\\s*(s|m|h|d|day)\\s*)+$",
+                    "description": "Maximum amount of time that can be requested for any single job.",
+                    "fa_icon": "far fa-clock",
+                    "hidden": true
                 }
             }
         },
@@ -332,6 +400,13 @@
                     "type": "string",
                     "description": "Internal parameter to store module-specific options.",
                     "hidden": true
+                },
+                "validationSchemaIgnoreParams": {
+                    "type": "string",
+                    "default": "genomes,igenomes_base",
+                    "description": "Parameters the nf-validation plugin does not check.",
+                    "fa_icon": "fas fa-check-square",
+                    "hidden": true
                 }
             }
         }
@@ -354,6 +429,9 @@
         },
         {
             "$ref": "#/definitions/institutional_config_options"
+        },
+        {
+            "$ref": "#/definitions/max_job_request_options"
         },
         {
             "$ref": "#/definitions/generic_options"

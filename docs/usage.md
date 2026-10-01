@@ -11,6 +11,7 @@
   - [Reference genome options](#reference-genome-options)
   - [Chromosome and phasing options](#chromosome-and-phasing-options)
   - [UMI options](#umi-options)
+  - [ASE calling options](#ase-calling-options)
   - [Institutional config options](#institutional-config-options)
   - [Max job request options](#max-job-request-options)
   - [Generic options](#generic-options)
@@ -56,7 +57,8 @@ The Alleleexpression
 6. **BAM Processing** ([`SAMtools`](http://www.htslib.org/))
 7. **Variant Phasing** ([`Beagle`](https://faculty.washington.edu/browning/beagle/beagle.html))
 8. **ASE Analysis** ([`phaser`](https://github.com/secastel/phaser))
-9. **Report Generation** ([`MultiQC`](http://multiqc.info/))
+9. **ASE Calling** - Binomial or beta-binomial test per gene with FDR and effect-size thresholds
+10. **Report Generation** ([`MultiQC`](http://multiqc.info/))
 
 ## Quick start
 
@@ -129,6 +131,35 @@ Options for UMI processing.
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-------------|------|---------|----------|--------|
 | `umi_separator` | UMI separator character in read IDs. | `string` | `:` | | |
+
+### ASE calling options
+
+Options for calling allele-specific expression from gene-level haplotype counts.
+
+| Parameter | Description | Type | Default | Required | Hidden |
+|-----------|-------------|------|---------|----------|--------|
+| `ase_test` | Statistical test for allele-specific expression: `binomial` or `betabinomial`. | `string` | `binomial` | | |
+| `ase_min_count` | Minimum haplotypic reads (aCount + bCount) for a gene to be tested for ASE. | `integer` | `20` | | |
+| `ase_fdr` | Benjamini-Hochberg FDR threshold for calling a gene ASE. | `number` | `0.05` | | |
+| `ase_min_effect` | Minimum effect size to call a gene ASE, as \|major haplotype fraction - 0.5\|. | `number` | `0` | | |
+| `ase_overdispersion` | Fixed beta-binomial overdispersion (rho) for `--ase_test betabinomial`. Estimated from the data if not set. | `number` | | | |
+| `ase_overdispersion_trim` | Fraction of tested genes left out when estimating the beta-binomial overdispersion. | `number` | `0.2` | | |
+
+#### Choosing an ASE test
+
+For each gene, phASER reports reads on haplotype A (`aCount`) and haplotype B (`bCount`). Genes with at least `--ase_min_count` reads are tested against a balanced 0.5 ratio with a two-sided test, and p-values are corrected with Benjamini-Hochberg across the tested genes in each sample. A gene is called ASE when its adjusted p-value is below `--ase_fdr` **and** its effect size, |major haplotype fraction - 0.5|, is at least `--ase_min_effect`.
+
+- **`--ase_test binomial`** (default) is an exact binomial test. It assumes that haplotype counts vary only through read sampling. Real data also vary for technical (library preparation, mapping) and biological reasons, so at high coverage the binomial test calls many small, unimportant imbalances.
+- **`--ase_test betabinomial`** models that extra variation with an overdispersion parameter, rho (variance = n p (1 - p) (1 + (n - 1) rho)). rho is estimated per sample by trimmed maximum likelihood: the pipeline fits rho, keeps the best-fitting `1 - --ase_overdispersion_trim` fraction of tested genes, refits, and repeats until the kept set is stable, so genes with real ASE do not inflate the estimate. Set `--ase_overdispersion_trim` to roughly the largest share of tested genes you expect to show ASE. The estimate needs enough genes; with fewer than 50 tested genes (e.g. a small chromosome or low depth) the pipeline warns, and you should fix rho with `--ase_overdispersion`, for example to a value estimated on a larger chromosome or another sample.
+- **`--ase_min_effect`** works with either test. `0.1` requires at least a 60:40 ratio, `0.15` at least 65:35. It removes genes that are statistically significant only because of high coverage. On its own it does not account for overdispersion; combine it with `betabinomial` for the most conservative calls.
+
+Recommended starting point for real data:
+
+```bash
+--ase_test betabinomial --ase_min_effect 0.1
+```
+
+On the simulated test dataset (12 genes with planted ASE out of 100 expressed, with realistic overdispersion), `binomial` makes 10-11 false calls per sample, `binomial` with `--ase_min_effect 0.1` makes 8-9, and `betabinomial` makes none while recovering 7-8 of the 12 true ASE genes.
 
 ### Institutional config options
 

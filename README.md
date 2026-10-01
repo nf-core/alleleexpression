@@ -46,7 +46,7 @@ nextflow run . -profile test,singularity --outdir results
 8. Beagle phasing
 9. Phaser for haplotype-level expression
 10. Phaser_gene_ae for gene-level ASE
-11. ASE calling: two-sided binomial test per gene (`--ase_min_count`, `--ase_fdr`, Benjamini-Hochberg)
+11. ASE calling per gene: binomial or beta-binomial test (`--ase_test`), Benjamini-Hochberg FDR (`--ase_fdr`) and optional minimum effect size (`--ase_min_effect`); see [usage](docs/usage.md#choosing-an-ase-test)
 12. MultiQC report generation
 
 ## Output

@@ -135,6 +135,9 @@ for S in "${SAMPLES[@]}"; do
         --vcf "$OUT/truth/${S}.phased_truth.vcf.gz" \
         --sample "$S" \
         --seed $seed \
+        --n-expressed 100 \
+        --n-ase 12 \
+        --n-molecules 150000 \
         --out-prefix "$OUT/fastq/${S}"
     mv "$OUT/fastq/${S}".truth_*.tsv "$OUT/truth/"
     seed=$((seed + 1))
