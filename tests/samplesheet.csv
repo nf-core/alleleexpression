@@ -1,2 +1,0 @@
-sample,fastq_1,fastq_2,vcf
-Sample_1,tests/test_data/fastq/sample1_R1_fixed.fastq.gz,tests/test_data/fastq/sample1_R2_fixed.fastq.gz,tests/test_data/variants/sample1.vcf.gz

@@ -17,6 +17,24 @@ Alleleexpression is a Nextflow pipeline for allele-specific expression (ASE) ana
 - Reference genome and annotation files
 - Beagle reference panel and genetic map (for phasing)
 
+With `-profile docker`, the phASER image must be built locally first:
+
+```bash
+docker build -t phaser:latest containers/phaser
+```
+
+With `-profile singularity` it is pulled automatically from Zenodo.
+
+## Testing
+
+Generate the simulated test dataset (2 Mb of GRCh38 chr11, two 1000 Genomes samples with
+planted allele-specific expression; see `tests/data/ase_sim/README.md`), then run:
+
+```bash
+tests/scripts/make_ase_sim_data.sh
+nextflow run . -profile test,singularity --outdir results
+```
+
 ## Pipeline steps
 1. Input validation and VCF preparation
 2. FastQC for raw reads
@@ -28,7 +46,7 @@ Alleleexpression is a Nextflow pipeline for allele-specific expression (ASE) ana
 8. Beagle phasing
 9. Phaser for haplotype-level expression
 10. Phaser_gene_ae for gene-level ASE
-11. Extraction of ASE genes
+11. ASE calling: two-sided binomial test per gene (`--ase_min_count`, `--ase_fdr`, Benjamini-Hochberg)
 12. MultiQC report generation
 
 ## Output

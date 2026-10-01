@@ -4,7 +4,7 @@ process PHASER {
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
     'https://zenodo.org/records/15772979/files/phASER.sif?download=1' :
-    'phaser:latest' }"
+    'docker.io/library/phaser:latest' }"
 
     input:
     tuple val(meta), path(vcf), path(tbi), path(bam), path(bai)

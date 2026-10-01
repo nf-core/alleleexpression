@@ -144,6 +144,29 @@
                 }
             }
         },
+        "ase_options": {
+            "title": "ASE calling options",
+            "type": "object",
+            "fa_icon": "fas fa-balance-scale",
+            "description": "Options for calling allele-specific expression from gene-level haplotype counts.",
+            "properties": {
+                "ase_min_count": {
+                    "type": "integer",
+                    "default": 20,
+                    "minimum": 1,
+                    "description": "Minimum haplotypic reads (aCount + bCount) for a gene to be tested for ASE.",
+                    "fa_icon": "fas fa-sort-numeric-up"
+                },
+                "ase_fdr": {
+                    "type": "number",
+                    "default": 0.05,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Benjamini-Hochberg FDR threshold for calling a gene ASE (two-sided binomial test vs 0.5).",
+                    "fa_icon": "fas fa-percent"
+                }
+            }
+        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -325,6 +348,9 @@
         },
         {
             "$ref": "#/definitions/umi_options"
+        },
+        {
+            "$ref": "#/definitions/ase_options"
         },
         {
             "$ref": "#/definitions/institutional_config_options"
