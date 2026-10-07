@@ -1,10 +1,10 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/asenext/master/nextflow_schema.json",
-    "title": "nf-core/asenext pipeline parameters",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/nf-core/alleleexpression/master/nextflow_schema.json",
+    "title": "nf-core/alleleexpression pipeline parameters",
     "description": "Allele-specific expression analysis pipeline using STAR-WASP",
     "type": "object",
-    "definitions": {
+    "$defs": {
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -111,7 +111,7 @@
                     "type": "string",
                     "description": "Chromosome to analyze for ASE.",
                     "fa_icon": "fas fa-chromosome",
-                    "default": "null"
+                    "default": "chr11"
                 },
                 "beagle_ref": {
                     "type": "string",
@@ -251,37 +251,6 @@
                 }
             }
         },
-        "max_job_request_options": {
-            "title": "Max job request options",
-            "type": "object",
-            "fa_icon": "fab fa-acquisitions-incorporated",
-            "description": "Set the top limit for requested resources for any single job.",
-            "properties": {
-                "max_cpus": {
-                    "type": "integer",
-                    "default": 16,
-                    "description": "Maximum number of CPUs that can be requested for any single job.",
-                    "fa_icon": "fas fa-microchip",
-                    "hidden": true
-                },
-                "max_memory": {
-                    "type": "string",
-                    "default": "128.GB",
-                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
-                    "description": "Maximum amount of memory that can be requested for any single job.",
-                    "fa_icon": "fas fa-memory",
-                    "hidden": true
-                },
-                "max_time": {
-                    "type": "string",
-                    "default": "240.h",
-                    "pattern": "^(\\d+\\.?\\s*(s|m|h|d|day)\\s*)+$",
-                    "description": "Maximum amount of time that can be requested for any single job.",
-                    "fa_icon": "far fa-clock",
-                    "hidden": true
-                }
-            }
-        },
         "generic_options": {
             "title": "Generic options",
             "type": "object",
@@ -400,41 +369,31 @@
                     "type": "string",
                     "description": "Internal parameter to store module-specific options.",
                     "hidden": true
-                },
-                "validationSchemaIgnoreParams": {
-                    "type": "string",
-                    "default": "genomes,igenomes_base",
-                    "description": "Parameters the nf-validation plugin does not check.",
-                    "fa_icon": "fas fa-check-square",
-                    "hidden": true
                 }
             }
         }
     },
     "allOf": [
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/definitions/reference_genome_options"
+            "$ref": "#/$defs/reference_genome_options"
         },
         {
-            "$ref": "#/definitions/chromosome_and_phasing_options"
+            "$ref": "#/$defs/chromosome_and_phasing_options"
         },
         {
-            "$ref": "#/definitions/umi_options"
+            "$ref": "#/$defs/umi_options"
         },
         {
-            "$ref": "#/definitions/ase_options"
+            "$ref": "#/$defs/ase_options"
         },
         {
-            "$ref": "#/definitions/institutional_config_options"
+            "$ref": "#/$defs/institutional_config_options"
         },
         {
-            "$ref": "#/definitions/max_job_request_options"
-        },
-        {
-            "$ref": "#/definitions/generic_options"
+            "$ref": "#/$defs/generic_options"
         }
     ]
 }

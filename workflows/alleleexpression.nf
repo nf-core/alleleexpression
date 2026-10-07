@@ -211,5 +211,5 @@ main:
 
     emit:
     multiqc_report = MULTIQC.out.report.toList()
-    versions       = ch_versions.ifEmpty(null)
+    versions       = ch_versions
 }

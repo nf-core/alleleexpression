@@ -20,8 +20,16 @@ Initial release of nf-core/alleleexpression, created with the [nf-core](https://
 - Container profiles (`docker`, `conda`, `podman`, ...) did not enable their engine.
 - phASER Dockerfile no longer built (EOL base image).
 - UMI-tools stats files were named `--random-seed=100_*`.
-- Parameters were never validated against `nextflow_schema.json`; `validateParameters()` now runs at start-up (`--validate_params`). `assets/schema_input.json` switched to JSON Schema draft-07, which nf-validation requires, and the `max_*` parameters were added to the schema.
+- Parameters were never validated against `nextflow_schema.json`; `validateParameters()` now runs at start-up (`--validate_params`).
+- `nf-core pipelines lint` failures: pipeline renamed from `asenext` to `alleleexpression` in the manifest and schemas, template files restored, logos added, unused `lib/` removed, `nf-test.config` aligned with the template.
 
 ### `Dependencies`
+
+- Migrated parameter validation from `nf-validation` to `nf-schema@2.3.0` (JSON Schema draft 2020-12).
+- Minimum Nextflow version is now 24.04.2.
+
+### `Removed`
+
+- `--max_cpus`, `--max_memory` and `--max_time`. Cap resources with Nextflow's `process.resourceLimits` instead (see usage docs).
 
 ### `Deprecated`

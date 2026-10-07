@@ -1,5 +1,8 @@
 # nf-core/alleleexpression
 
+[![Nextflow](https://img.shields.io/badge/version-%E2%89%A524.04.2-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
+[![nf-core template version](https://img.shields.io/badge/nf--core_template-3.3.1-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/3.3.1)
+
 ## Overview
 Alleleexpression is a Nextflow pipeline for allele-specific expression (ASE) analysis using STAR-WASP for alignment, UMI-tools for deduplication, and phaser for haplotype phasing and ASE detection.
 
@@ -12,7 +15,7 @@ Alleleexpression is a Nextflow pipeline for allele-specific expression (ASE) ana
 - Comprehensive QC with FastQC and MultiQC reporting
 
 ## Requirements
-- Nextflow (>=21.10.3)
+- Nextflow (>=24.04.2)
 - Singularity or Docker
 - Reference genome and annotation files
 - Beagle reference panel and genetic map (for phasing)

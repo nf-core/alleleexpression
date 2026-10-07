@@ -18,7 +18,7 @@ nextflow.enable.dsl = 2
 */
 
 include { alleleexpression   } from './workflows/alleleexpression'
-include { validateParameters } from 'plugin/nf-validation'
+include { validateParameters } from 'plugin/nf-schema'
 
 /*
 ========================================================================================
@@ -35,7 +35,7 @@ workflow {
     if (params.validate_params) {
         validateParameters()
     }
-    // nf-validation skips falsy values, so 0 is not caught by the schema bounds
+    // Explicit range check, kept in addition to the schema bounds
     if (params.ase_overdispersion != null && !(params.ase_overdispersion > 0 && params.ase_overdispersion < 1)) {
         error "--ase_overdispersion must be between 0 and 1 (exclusive), got ${params.ase_overdispersion}"
     }

@@ -13,7 +13,6 @@
   - [UMI options](#umi-options)
   - [ASE calling options](#ase-calling-options)
   - [Institutional config options](#institutional-config-options)
-  - [Max job request options](#max-job-request-options)
   - [Generic options](#generic-options)
 - [Samplesheet format](#samplesheet-format)
 - [Reference files](#reference-files)
@@ -62,7 +61,7 @@ The Alleleexpression
 
 ## Quick start
 
-1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
+1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=24.04.2`)
 
 2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(you can use [`Conda`](https://conda.io/miniconda.html) both to install Nextflow itself and also to manage software within pipelines. Please only use it within pipelines as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_.
 
@@ -173,16 +172,6 @@ Parameters used to describe centralised config profiles. These should not be edi
 | `config_profile_description` | Institutional config description. | `string` | | | ✓ |
 | `config_profile_contact` | Institutional config contact information. | `string` | | | ✓ |
 | `config_profile_url` | Institutional config URL link. | `string` | | | ✓ |
-
-### Max job request options
-
-Set the top limit for requested resources for any single job.
-
-| Parameter | Description | Type | Default | Required | Hidden |
-|-----------|-------------|------|---------|----------|--------|
-| `max_cpus` | Maximum number of CPUs that can be requested for any single job. | `integer` | `16` | | ✓ |
-| `max_memory` | Maximum amount of memory that can be requested for any single job. | `string` | `128.GB` | | ✓ |
-| `max_time` | Maximum amount of time that can be requested for any single job. | `string` | `240.h` | | ✓ |
 
 ### Generic options
 
@@ -401,6 +390,14 @@ You can also supply a run name to resume a specific run: `-resume [run-name]`. U
 ### Custom configuration
 
 #### Resource requests
+
+To cap the resources any single task can request (for example on a laptop or a shared node), set Nextflow's [`process.resourceLimits`](https://www.nextflow.io/docs/latest/reference/process.html#resourcelimits) in a custom config passed with `-c`:
+
+```groovy
+process {
+    resourceLimits = [ cpus: 8, memory: 32.GB, time: 24.h ]
+}
+```
 
 Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with any of the error codes specified [here](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L18) it will automatically be resubmitted with higher requests (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
 

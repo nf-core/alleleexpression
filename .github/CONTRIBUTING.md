@@ -115,7 +115,7 @@ This repo includes a devcontainer configuration which will create a GitHub Codes
 
 To get started:
 
-<!-- - Open the repo in [Codespaces](https://github.com/nf-core/alleleexpression/codespaces) -->
+- Open the repo in [Codespaces](https://github.com/nf-core/alleleexpression/codespaces)
 - Tools installed
   - nf-core
   - Nextflow
