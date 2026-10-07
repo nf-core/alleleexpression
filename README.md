@@ -30,13 +30,16 @@ With `-profile singularity` it is pulled automatically from Zenodo.
 
 ## Testing
 
-Generate the simulated test dataset (2 Mb of GRCh38 chr11, two 1000 Genomes samples with
-planted allele-specific expression; see `tests/data/ase_sim/README.md`), then run:
+The `test` profile downloads a simulated dataset from [Zenodo](https://zenodo.org/records/23215419)
+(2 Mb of GRCh38 chr11, two 1000 Genomes samples with planted allele-specific expression, plus
+truth tables):
 
 ```bash
-tests/scripts/make_ase_sim_data.sh
-nextflow run . -profile test,singularity --outdir results
+nextflow run nf-core/alleleexpression -profile test,docker --outdir results
 ```
+
+To rebuild the dataset locally, run `tests/scripts/make_ase_sim_data.sh` (see
+`tests/data/ase_sim/README.md`).
 
 ## Pipeline steps
 1. Input validation and VCF preparation
