@@ -12,6 +12,7 @@ include { SAMPLESHEET_CHECK } from '../modules/local/input_check'
 include { PREPARE_VCF } from '../modules/local/prepare_vcf'
 include { CHROMOSOME_CHECK } from '../modules/local/chromosome_check'
 include { FASTQC } from '../modules/nf-core/fastqc/main'
+include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main'
 include { STAR_ALIGN_WASP } from '../modules/local/star_align_wasp/main'
 include { FILTER_WASP_READS } from '../modules/local/filter_wasp_reads/main'
 include { UMITOOLS_DEDUP } from '../modules/nf-core/umitools/dedup/main'
@@ -72,14 +73,26 @@ main:
     )
     ch_versions = ch_versions.mix(PREPARE_VCF.out.versions)
 
-    // FIXED: Create properly formatted reference channels
     // Value channels (.first()) so every sample can reuse the reference files
-    ch_star_index = Channel.fromPath(params.star_index)
-        .map { file -> [['id': 'star_index'], file] }
-        .first()
-    ch_gtf = Channel.fromPath(params.gtf)
+    ch_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
         .map { file -> [['id': 'gtf'], file] }
         .first()
+
+    // Use a pre-built STAR index if given, otherwise build one from --fasta and --gtf
+    if (params.star_index) {
+        ch_star_index = Channel.fromPath(params.star_index, checkIfExists: true)
+            .map { file -> [['id': 'star_index'], file] }
+            .first()
+    } else {
+        ch_fasta = Channel.fromPath(params.fasta, checkIfExists: true)
+            .map { file -> [['id': 'genome'], file] }
+            .first()
+        STAR_GENOMEGENERATE (
+            ch_fasta,
+            ch_gtf
+        )
+        ch_star_index = STAR_GENOMEGENERATE.out.index.first()
+    }
 
     // FIXED: Use direct values instead of Channel.value()
     def star_ignore_sjdbgtf = false

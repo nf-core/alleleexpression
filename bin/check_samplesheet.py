@@ -48,9 +48,9 @@ def check_samplesheet(file_in, file_out):
                     print(f"ERROR: Missing value for {col} in row {i+1}")
                     sys.exit(1)
 
-            # Check if files exist
+            # Check if local files exist (remote URLs are staged by Nextflow)
             for col in ["fastq_1", "fastq_2", "vcf"]:
-                if not Path(row[col]).exists():
+                if "://" not in row[col] and not Path(row[col]).exists():
                     print(f"WARNING: File does not exist: {row[col]}")
 
             sample_mapping_dict[sample] = [row]

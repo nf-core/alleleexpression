@@ -60,7 +60,7 @@
                     "exists": true,
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
-                    "description": "Path to FASTA genome file.",
+                    "description": "Path to FASTA genome file. Required when `--star_index` is not given.",
                     "fa_icon": "far fa-file-code"
                 },
                 "gtf": {
@@ -74,8 +74,13 @@
                 "star_index": {
                     "type": "string",
                     "format": "directory-path",
-                    "description": "Path to directory containing STAR genome index.",
+                    "description": "Path to directory containing a pre-built STAR index. If not given, it is built from `--fasta` and `--gtf`.",
                     "fa_icon": "fas fa-bezier-curve"
+                },
+                "save_reference": {
+                    "type": "boolean",
+                    "description": "Save the STAR index built by the pipeline to `<outdir>/genome/index` so it can be reused with `--star_index`.",
+                    "fa_icon": "fas fa-save"
                 },
                 "gene_features": {
                     "type": "string",

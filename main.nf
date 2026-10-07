@@ -40,6 +40,10 @@ workflow {
         error "--ase_overdispersion must be between 0 and 1 (exclusive), got ${params.ase_overdispersion}"
     }
 
+    if (!params.star_index && !params.fasta) {
+        error "Either --star_index or --fasta (to build the STAR index) must be provided"
+    }
+
     // Check input parameters
     if (!params.input) {
         error 'Input samplesheet not specified!'
