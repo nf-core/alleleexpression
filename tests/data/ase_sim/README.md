@@ -1,6 +1,8 @@
 # ase_sim: simulated end-to-end test data
 
 Built by `tests/scripts/make_ase_sim_data.sh` (≈1.5 min, downloads cached in `../testdata_cache`).
+Published on Zenodo as [10.5281/zenodo.23215419](https://doi.org/10.5281/zenodo.23215419)
+(flat file layout, samplesheet with Zenodo URLs); `-profile test` uses that record.
 
 - **Region**: GRCh38 chr11:64,500,001-66,500,000, re-based to 1 (contig still `chr11`).
   Every coordinate in every file is `GRCh38 position - 64,500,000`.

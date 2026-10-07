@@ -11,7 +11,7 @@ Initial release of nf-core/alleleexpression, created with the [nf-core](https://
 
 - ASE calling with a choice of test (`--ase_test binomial|betabinomial`), Benjamini-Hochberg FDR (`--ase_fdr`), minimum read count (`--ase_min_count`) and minimum effect size (`--ase_min_effect`). The beta-binomial overdispersion is estimated per sample by trimmed maximum likelihood (`--ase_overdispersion_trim`) or fixed with `--ase_overdispersion`. Per-gene statistics are written to `ase/*.ase_stats.tsv`.
 - `--star_index` is optional: if not given, the STAR index is built from `--fasta` and `--gtf` (nf-core `star/genomegenerate`); `--save_reference` saves it.
-- Simulated end-to-end test dataset (`tests/scripts/make_ase_sim_data.sh`) with planted ASE and a truth-based evaluation script (`tests/scripts/evaluate_ase.py`).
+- Simulated end-to-end test dataset (`tests/scripts/make_ase_sim_data.sh`) with planted ASE and a truth-based evaluation script (`tests/scripts/evaluate_ase.py`), hosted on Zenodo ([10.5281/zenodo.23215419](https://doi.org/10.5281/zenodo.23215419)) and used by `-profile test`.
 
 ### `Fixed`
 
