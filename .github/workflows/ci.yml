@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix:
         NXF_VER:
-          - "24.04.2"
+          - "25.04.0"
           - "latest-everything"
         profile:
           - "conda"
@@ -81,6 +81,11 @@ jobs:
 
       - name: Clean up Disk space
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
+
+      # phASER has no public Docker image; build it from containers/phaser
+      - name: Build phASER Docker image
+        if: matrix.profile == 'docker'
+        run: docker build -t phaser:latest containers/phaser
 
       - name: "Run pipeline with test data ${{ matrix.NXF_VER }} | ${{ matrix.test_name }} | ${{ matrix.profile }}"
         run: |

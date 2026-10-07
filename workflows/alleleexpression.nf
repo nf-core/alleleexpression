@@ -91,7 +91,7 @@ main:
             ch_fasta,
             ch_gtf
         )
-        ch_star_index = STAR_GENOMEGENERATE.out.index.first()
+        ch_star_index = STAR_GENOMEGENERATE.out.index
     }
 
     // FIXED: Use direct values instead of Channel.value()
@@ -207,20 +207,59 @@ main:
     )
     ch_versions = ch_versions.mix(EXTRACT_ASE_GENES.out.versions)
 
-    // FIXED: MultiQC with proper channel handling
+    //
+    // Collate software versions: versions.yml files from modules plus
+    // topic-channel versions emitted by newer nf-core modules
+    //
+    ch_versions_yml = ch_versions
+        .unique()
+        .map { file -> new org.yaml.snakeyaml.Yaml().load(file.text) }
+    ch_versions_topic = channel.topic('versions')
+        .map { process, tool, version -> [(process): [(tool): version]] }
+
+    ch_collated_versions = ch_versions_yml
+        .mix(ch_versions_topic)
+        .collect()
+        .map { entries ->
+            def merged = new TreeMap()
+            entries.each { entry ->
+                entry.each { process, tools ->
+                    def name = process.toString().tokenize(':')[-1]
+                    merged[name] = (merged[name] ?: new TreeMap()) + tools.collectEntries { k, v -> [k.toString(), v.toString()] }
+                }
+            }
+            merged['Workflow'] = [
+                (workflow.manifest.name): workflow.manifest.version.toString(),
+                Nextflow: workflow.nextflow.version.toString()
+            ]
+            def options = new org.yaml.snakeyaml.DumperOptions()
+            options.setDefaultFlowStyle(org.yaml.snakeyaml.DumperOptions.FlowStyle.BLOCK)
+            new org.yaml.snakeyaml.Yaml(options).dump(merged)
+        }
+        .collectFile(
+            storeDir: "${params.outdir}/pipeline_info",
+            name: 'nf_core_alleleexpression_software_mqc_versions.yml',
+            newLine: true
+        )
+
+    //
+    // MultiQC
+    //
     ch_multiqc_files = Channel.empty()
-        .mix(FASTQC.out.zip.collect{it[1]})
+        .mix(FASTQC.out.zip.collect { it[1] })
+        .mix(STAR_ALIGN_WASP.out.log_final.collect { it[1] })
+        .mix(UMITOOLS_DEDUP.out.log.collect { it[1] })
+        .mix(ch_collated_versions)
         .collect()
 
     MULTIQC (
         ch_multiqc_files,
-        ch_multiqc_config.ifEmpty([]),
-        ch_multiqc_custom_config.ifEmpty([]),
-        Channel.empty(),  // multiqc_logo
-        Channel.empty(),  // replace_names
-        Channel.empty()   // sample_names
+        ch_multiqc_config.toList(),
+        ch_multiqc_custom_config.toList(),
+        [],  // multiqc_logo
+        [],  // replace_names
+        []   // sample_names
     )
-    ch_versions = ch_versions.mix(MULTIQC.out.versions)
 
     emit:
     multiqc_report = MULTIQC.out.report.toList()

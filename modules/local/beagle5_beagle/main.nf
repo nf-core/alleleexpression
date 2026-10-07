@@ -30,7 +30,18 @@ process BEAGLE5_BEAGLE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        beagle: \$(echo \$(beagle 2>&1 | head -n 1 | sed 's/^.*version //; s/ .*\$//'))
+        beagle: \$(beagle 2>&1 | head -n 1 | sed -n 's/.*version \\([0-9.]*\\).*/\\1/p')
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}_beagle"
+    """
+    echo "" | gzip > ${prefix}.vcf.gz
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        beagle: \$(beagle 2>&1 | head -n 1 | sed -n 's/.*version \\([0-9.]*\\).*/\\1/p')
     END_VERSIONS
     """
 }

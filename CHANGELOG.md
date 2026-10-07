@@ -22,6 +22,11 @@ Initial release of nf-core/alleleexpression, created with the [nf-core](https://
 - phASER Dockerfile no longer built (EOL base image).
 - UMI-tools stats files were named `--random-seed=100_*`.
 - Beagle VCF indexes were published to `<outdir>/results/` instead of `<outdir>/beagle/`.
+- MultiQC never ran (empty optional inputs); it now also reports STAR, UMI-tools and software versions.
+- Software versions are collated into `pipeline_info/nf_core_alleleexpression_software_mqc_versions.yml`; fixed version commands that wrote invalid YAML (phASER, awk) or wrong values (tabix, Beagle).
+- phASER variant lists were in random order between runs; `PYTHONHASHSEED=0` makes outputs reproducible.
+- `-stub` runs: added stubs to all local modules and fixed STAR stub output names.
+- nf-test: added snapshot and `tests/.nftignore`; CI tests the Docker profile (building the phASER image) and Nextflow 25.04.0.
 - Parameters were never validated against `nextflow_schema.json`; `validateParameters()` now runs at start-up (`--validate_params`).
 - `nf-core pipelines lint` failures: pipeline renamed from `asenext` to `alleleexpression` in the manifest and schemas, template files restored, logos added, unused `lib/` removed, `nf-test.config` aligned with the template.
 

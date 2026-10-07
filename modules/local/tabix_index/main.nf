@@ -23,4 +23,14 @@ process TABIX_INDEX {
         tabix: \$(echo \$(tabix --version 2>&1) | sed 's/^.*tabix (htslib) //; s/ .*\$//')
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch ${vcf}.tbi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        tabix: \$(echo \$(tabix --version 2>&1) | sed 's/^.*tabix (htslib) //; s/ .*\$//')
+    END_VERSIONS
+    """
 }

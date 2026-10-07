@@ -18,6 +18,9 @@ process PHASER {
 
     script:
     """
+    # phASER builds variant lists from Python sets; fix the hash seed so their order is reproducible
+    export PYTHONHASHSEED=0
+
     phaser.py \\
         --vcf $vcf \\
         --bam $bam \\
@@ -30,7 +33,20 @@ process PHASER {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        phaser: \$(phaser.py --version 2>&1 | sed 's/phaser.py //')
+        phaser: \$(sed -n 's/^\\s*version = "\\(.*\\)";/\\1/p' /opt/phaser/phaser/phaser.py | head -n1)
+    END_VERSIONS
+    """
+
+    stub:
+    """
+    touch ${meta.id}.phaser_output.haplotypic_counts.txt
+    touch ${meta.id}.phaser_output.allele_config.txt
+    touch ${meta.id}.phaser_output.variant_connections.txt
+    touch ${meta.id}.phaser_output.haplotypes.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        phaser: \$(sed -n 's/^\\s*version = "\\(.*\\)";/\\1/p' /opt/phaser/phaser/phaser.py | head -n1)
     END_VERSIONS
     """
 }

@@ -104,7 +104,7 @@ process STAR_ALIGN_WASP {
     touch ${prefix}.sortedByCoord.out.bam
     touch ${prefix}.toTranscriptome.out.bam
     touch ${prefix}.Aligned.unsort.out.bam
-    touch ${prefix}.Aligned.sortedByCoordinate.out.bam
+    touch ${prefix}.Aligned.sortedByCoord.out.bam
     touch ${prefix}.tab
     touch ${prefix}.SJ.out.tab
     touch ${prefix}.ReadsPerGene.out.tab

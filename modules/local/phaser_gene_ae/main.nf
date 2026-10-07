@@ -16,6 +16,9 @@ process PHASER_GENE_AE {
 
     script:
     """
+    # phASER builds variant lists from Python sets; fix the hash seed so their order is reproducible
+    export PYTHONHASHSEED=0
+
     phaser_gene_ae.py \\
         --haplotypic_counts $counts \\
         --features $gene_features \\
@@ -23,7 +26,17 @@ process PHASER_GENE_AE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        phaser_gene_ae: \$(phaser_gene_ae.py --version 2>&1 | sed 's/phaser_gene_ae.py //')
+        phaser_gene_ae: \$(sed -n 's/^\\s*version = "\\(.*\\)";/\\1/p' /opt/phaser/phaser/phaser.py | head -n1)
+    END_VERSIONS
+    """
+
+    stub:
+    """
+    touch ${meta.id}_gene_ae.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        phaser_gene_ae: \$(sed -n 's/^\\s*version = "\\(.*\\)";/\\1/p' /opt/phaser/phaser/phaser.py | head -n1)
     END_VERSIONS
     """
 }

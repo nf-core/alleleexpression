@@ -32,7 +32,20 @@ process PREPARE_VCF {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         bcftools: \$(bcftools --version 2>&1 | head -n1 | sed 's/^.*bcftools //; s/ .*\$//')
-        tabix: \$(tabix --version 2>&1 | head -n1 | sed 's/^.*tabix //; s/ .*\$//')
+        tabix: \$(tabix --version 2>&1 | head -n1 | sed 's/^.*(htslib) //')
+    END_VERSIONS
+    """
+
+    stub:
+    """
+    touch ${meta.id}.GTonly.vcf
+    echo "" | gzip > ${meta.id}.filtered.vcf.gz
+    touch ${meta.id}.filtered.vcf.gz.tbi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        bcftools: \$(bcftools --version 2>&1 | head -n1 | sed 's/^.*bcftools //; s/ .*\$//')
+        tabix: \$(tabix --version 2>&1 | head -n1 | sed 's/^.*(htslib) //')
     END_VERSIONS
     """
 }
