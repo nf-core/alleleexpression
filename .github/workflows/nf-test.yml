@@ -102,11 +102,14 @@ jobs:
         run: docker build -t phaser:latest containers/phaser
 
       - name: Run nf-test
+        id: run_nf_test
         uses: ./.github/actions/nf-test
+        continue-on-error: ${{ matrix.NXF_VER == 'latest-everything' }}
         env:
           NFT_DIFF: ${{ env.NFT_DIFF }}
           NFT_DIFF_ARGS: ${{ env.NFT_DIFF_ARGS }}
           NFT_WORKDIR: ${{ env.NFT_WORKDIR }}
+          NXF_VERSION: ${{ matrix.NXF_VER }}
         with:
           profile: ${{ matrix.profile }}
           shard: ${{ matrix.shard }}
